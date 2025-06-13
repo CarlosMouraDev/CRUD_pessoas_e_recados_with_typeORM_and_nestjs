@@ -9,4 +9,9 @@ export class RecadosService {
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>
   ) {}
+
+  async findAll() {
+    const recados = await this.recadoRepository.find();
+    return recados;
+  }
 }

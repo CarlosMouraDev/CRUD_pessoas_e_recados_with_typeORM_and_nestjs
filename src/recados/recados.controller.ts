@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { RecadosService } from './recados.service';
 
 @Controller('recados')
-export class RecadosController {}
+export class RecadosController {
+  constructor(private readonly recadosService: RecadosService) {}
+
+  @Get()
+  async findAll() {
+    return await this.recadosService.findAll();
+  }
+}
