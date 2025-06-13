@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RecadosModule } from './recados/recados.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: 'carlos123',
       autoLoadEntities: true,
       synchronize: true,
-    })
+    }),
+    RecadosModule
   ],
   controllers: [AppController],
   providers: [AppService],
