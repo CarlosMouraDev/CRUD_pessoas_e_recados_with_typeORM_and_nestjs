@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecadosModule } from './recados/recados.module';
+import { PessoaModule } from './pessoa/pessoa.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { RecadosModule } from './recados/recados.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    RecadosModule
+    RecadosModule,
+    PessoaModule
   ],
   controllers: [AppController],
   providers: [AppService],
