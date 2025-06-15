@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 
@@ -9,6 +9,11 @@ export class RecadosController {
   @Get()
   async findAll() {
     return await this.recadosService.findAll();
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return await this.recadosService.delete(id)
   }
 
   @Post()

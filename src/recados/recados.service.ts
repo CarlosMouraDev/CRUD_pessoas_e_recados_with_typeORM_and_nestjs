@@ -25,4 +25,13 @@ export class RecadosService {
   const recado = this.recadoRepository.create(novoRecado)
   return await this.recadoRepository.save(recado)
  }
+
+ async delete(id: number) {
+  await this.recadoRepository.delete({
+    id: id
+  })
+
+  return "sucesso"
+ }
+
 }
