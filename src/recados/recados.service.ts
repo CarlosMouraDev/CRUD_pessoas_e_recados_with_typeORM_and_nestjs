@@ -4,12 +4,14 @@ import { Recado } from './entities/recados.entity';
 import { Repository } from 'typeorm';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
+import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
 
 @Injectable()
 export class RecadosService {
   constructor(
     @InjectRepository(Recado)
-    private readonly recadoRepository: Repository<Recado>
+    private readonly recadoRepository: Repository<Recado>,
+    private readonly pessoaRepository: Repository<Pessoa>
   ) {}
 
   async findAll() {
