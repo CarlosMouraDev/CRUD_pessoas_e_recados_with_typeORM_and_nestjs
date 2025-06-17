@@ -23,10 +23,10 @@ export class Recado {
   
   @ManyToOne(() => Pessoa)
   @JoinColumn({ name: 'de' })
-  de: string;
+  de: Pessoa;
 
   @ManyToOne(() => Pessoa)
   @JoinColumn({ name: 'para' })
-  para: string;
+  para: Pessoa;
 
 }

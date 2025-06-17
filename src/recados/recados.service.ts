@@ -5,13 +5,14 @@ import { Repository } from 'typeorm';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
+import { PessoaService } from 'src/pessoa/pessoa.service';
 
 @Injectable()
 export class RecadosService {
   constructor(
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
-    private readonly pessoaRepository: Repository<Pessoa>
+    private readonly pessoaService: PessoaService
   ) {}
 
   async findAll() {
@@ -19,14 +20,31 @@ export class RecadosService {
     return recados;
   }
  async create(createRecadoDto: CreateRecadoDto) {
+  const { deId, paraId } = createRecadoDto;
+
+  const de = await this.pessoaService.findOne(deId)
+
+  const para = await this.pessoaService.findOne(paraId)
+
   const novoRecado = {
-    ...createRecadoDto,
+    texto: createRecadoDto.texto,
+    de,
+    para,
     lido: false,
     data: new Date(),
   };
-
   const recado = this.recadoRepository.create(novoRecado)
-  return await this.recadoRepository.save(recado)
+  await this.recadoRepository.save(recado)
+
+  return {
+    ...recado,
+    de: {
+      id: recado.de.id,
+    },
+    para: {
+      id: recado.para.id,
+    },
+  }
  }
 
  async delete(id: number) {

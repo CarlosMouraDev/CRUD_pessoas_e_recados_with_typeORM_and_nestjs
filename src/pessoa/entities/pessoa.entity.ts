@@ -24,8 +24,8 @@ export class Pessoa {
   updatedAt?: Date;
 
   @OneToMany(() => Recado, recado => recado.de)
-  recadosEnviados: Recado[]
+  recadosEnviados: Recado[];
 
   @OneToMany(() => Recado, recado => recado.para)
-  recadosRecebidos: Recado[]
+  recadosRecebidos: Recado[];
 }

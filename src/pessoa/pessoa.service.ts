@@ -43,7 +43,7 @@ export class PessoaService {
   async findOne(id: number) {
     try {
       const found = await this.pessoaRepository.findOneBy({
-        id: id
+        id
       })
 
       if (!found) {
