@@ -40,12 +40,46 @@ export class PessoaService {
     })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pessoa`;
+  async findOne(id: number) {
+    try {
+      const found = await this.pessoaRepository.findOneBy({
+        id: id
+      })
+
+      if (!found) {
+        throw new NotFoundException('Pessoa não encontrada.')
+      }
+
+      return found;
+    } catch (error) {
+      throw error
+    }
   }
 
-  update(id: number, updatePessoaDto: UpdatePessoaDto) {
-    return `This action updates a #${id} pessoa`;
+  async update(id: number, updatePessoaDto: UpdatePessoaDto) {
+    try {
+      const pessoaData = {
+      nome: updatePessoaDto.nome,
+      passwordHash: updatePessoaDto.password,
+      email: updatePessoaDto.email
+    };
+
+    const updated = await this.pessoaRepository.preload({
+      id,
+      ...pessoaData
+    });
+    if (!updated) {
+      throw new NotFoundException('Pessoa não encontrada.')
+    }
+
+    return this.pessoaRepository.save(updated);
+    } catch (error) {
+      if(error.code === '23505') {
+        throw new ConflictException('E-mail já cadastrado.');
+      }
+
+      throw error;
+    }
   }
 
   async remove(id: number) {
