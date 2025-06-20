@@ -4,9 +4,9 @@ import { Recado } from './entities/recados.entity';
 import { Repository } from 'typeorm';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
-import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
 import { PessoaService } from 'src/pessoa/pessoa.service';
 import { NotFoundError } from 'rxjs';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class RecadosService {
@@ -16,8 +16,12 @@ export class RecadosService {
     private readonly pessoaService: PessoaService
   ) {}
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
     const recados = await this.recadoRepository.find({
+      take: limit,
+      skip: offset,
       relations: ['de', 'para'],
       order: {
         id: 'DESC'

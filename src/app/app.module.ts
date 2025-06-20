@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RecadosModule } from './recados/recados.module';
-import { PessoaModule } from './pessoa/pessoa.module';
+import { RecadosModule } from '../recados/recados.module';
+import { PessoaModule } from '../pessoa/pessoa.module';
 
 @Module({
   imports: [
