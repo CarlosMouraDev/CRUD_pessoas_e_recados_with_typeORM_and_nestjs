@@ -1,5 +1,4 @@
 import { CallHandler, ExecutionContext, NestInterceptor, UnauthorizedException } from "@nestjs/common";
-import { isUndefined } from "util";
 
 export class AuthTokenInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler<any>) {
