@@ -31,4 +31,10 @@ export class AppModule implements NestModule {
       method: RequestMethod.ALL
     })
   }
+  configure1(consumer: MiddlewareConsumer) {
+    consumer.apply(SimpleMiddleware).forRoutes({
+      path: '*',
+      method: RequestMethod.ALL
+    })
+  }
 }
