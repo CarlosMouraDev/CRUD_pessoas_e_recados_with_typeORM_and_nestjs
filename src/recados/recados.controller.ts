@@ -19,8 +19,7 @@ import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
-import { Request } from 'express';
-import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
+import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
 
 @Controller('recados')
 export class RecadosController {
@@ -28,7 +27,7 @@ export class RecadosController {
 
   @Get()
   @UseInterceptors(TimingConnectionInterceptor)
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto: PaginationDto, @ReqDataParam('method') method) {
     return await this.recadosService.findAll(paginationDto);
   }
 
