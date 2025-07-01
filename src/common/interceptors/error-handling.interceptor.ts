@@ -7,8 +7,6 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
     const now = Date.now()
     console.log('executado')
 
-    await new Promise(resolve => setTimeout(resolve, 10000))
-
     return next.handle().pipe(
       tap(() => {
         catchError(error => {
