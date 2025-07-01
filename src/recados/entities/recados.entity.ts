@@ -1,5 +1,14 @@
-import { Pessoa } from "src/pessoa/entities/pessoa.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Pessoa } from 'src/pessoa/entities/pessoa.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Recado {
@@ -20,13 +29,12 @@ export class Recado {
 
   @UpdateDateColumn()
   updatedAt?: Date;
-  
-  @ManyToOne(() => Pessoa, { onDelete: "CASCADE", onUpdate: "CASCADE"})
+
+  @ManyToOne(() => Pessoa, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'de' })
   de: Pessoa;
 
-  @ManyToOne(() => Pessoa, { onDelete: "CASCADE", onUpdate: "CASCADE"})
+  @ManyToOne(() => Pessoa, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
   @JoinColumn({ name: 'para' })
   para: Pessoa;
-
 }

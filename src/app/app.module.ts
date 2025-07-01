@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -21,26 +26,19 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
       synchronize: true,
     }),
     RecadosModule,
-    PessoaModule
+    PessoaModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_FILTER,
-      useClass: MyExceptionFilter
+      useClass: MyExceptionFilter,
     },
     {
       provide: APP_GUARD,
-      useClass: MyExceptionFilter
+      useClass: MyExceptionFilter,
     },
   ],
 })
-export class AppModule implements NestModule { 
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(SimpleMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL
-    })
-  }
-}
+export class AppModule {}

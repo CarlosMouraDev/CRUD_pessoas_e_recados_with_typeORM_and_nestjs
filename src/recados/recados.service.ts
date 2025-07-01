@@ -13,7 +13,7 @@ export class RecadosService {
   constructor(
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
-    private readonly pessoaService: PessoaService
+    private readonly pessoaService: PessoaService,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -24,18 +24,18 @@ export class RecadosService {
       skip: offset,
       relations: ['de', 'para'],
       order: {
-        id: 'DESC'
+        id: 'DESC',
       },
       select: {
         de: {
           id: true,
-          nome: true
+          nome: true,
         },
         para: {
           id: true,
-          nome: true
-        }
-      }
+          nome: true,
+        },
+      },
     });
     return recados;
   }
@@ -44,71 +44,69 @@ export class RecadosService {
     const recados = await this.recadoRepository.findOne({
       relations: ['de', 'para'],
       order: {
-        id: 'DESC'
+        id: 'DESC',
       },
       select: {
         de: {
           id: true,
-          nome: true
+          nome: true,
         },
         para: {
           id: true,
-          nome: true
-        }
-      }
+          nome: true,
+        },
+      },
     });
 
-    if(!recados) throw new NotFoundError("Recado não encontrado")
-    
+    if (!recados) throw new NotFoundError('Recado não encontrado');
+
     return recados;
   }
- async create(createRecadoDto: CreateRecadoDto) {
-  const { deId, paraId } = createRecadoDto;
+  async create(createRecadoDto: CreateRecadoDto) {
+    const { deId, paraId } = createRecadoDto;
 
-  const de = await this.pessoaService.findOne(deId)
+    const de = await this.pessoaService.findOne(deId);
 
-  const para = await this.pessoaService.findOne(paraId)
+    const para = await this.pessoaService.findOne(paraId);
 
-  const novoRecado = {
-    texto: createRecadoDto.texto,
-    de,
-    para,
-    lido: false,
-    data: new Date(),
-  };
-  const recado = this.recadoRepository.create(novoRecado)
-  await this.recadoRepository.save(recado)
+    const novoRecado = {
+      texto: createRecadoDto.texto,
+      de,
+      para,
+      lido: false,
+      data: new Date(),
+    };
+    const recado = this.recadoRepository.create(novoRecado);
+    await this.recadoRepository.save(recado);
 
-  return {
-    ...recado,
-    de: {
-      id: recado.de.id,
-      nome: recado.de.nome
-    },
-    para: {
-      id: recado.para.id,
-      nome: recado.para.nome
-    },
+    return {
+      ...recado,
+      de: {
+        id: recado.de.id,
+        nome: recado.de.nome,
+      },
+      para: {
+        id: recado.para.id,
+        nome: recado.para.nome,
+      },
+    };
   }
- }
 
- async delete(id: number) {
-  await this.recadoRepository.delete({
-    id: id
-  })
+  async delete(id: number) {
+    await this.recadoRepository.delete({
+      id: id,
+    });
 
-  return "sucesso"
- }
+    return 'sucesso';
+  }
 
- async update(id: number, updateRecadoDto: UpdateRecadoDto) {
+  async update(id: number, updateRecadoDto: UpdateRecadoDto) {
+    const recado = await this.findOne(id);
 
-  const recado = await this.findOne(id)
+    recado.texto = updateRecadoDto?.texto ?? recado.texto;
+    recado.lido = updateRecadoDto?.lido ?? recado.lido;
+    await this.recadoRepository.save(recado);
 
-  recado.texto = updateRecadoDto?.texto ?? recado.texto;
-  recado.lido = updateRecadoDto?.lido ?? recado.lido;
-  await this.recadoRepository.save(recado);
-
-
-  return this.recadoRepository.save(recado);
- }
+    return this.recadoRepository.save(recado);
+  }
 }
