@@ -11,38 +11,24 @@ import { RecadosModule } from '../recados/recados.module';
 import { PessoaModule } from '../pessoa/pessoa.module';
 import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as Joi from '@hapi/joi';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import appConfig from './app.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      load: [appConfig],
-      envFilePath: '.env',
-      validationSchema: Joi.object({
-        DATABASE_TYPE: Joi.required(),
-        DATABASE_HOST: Joi.required(),
-        DATABASE_PORT: Joi.number(),
-        DATABASE_USERNAME: Joi.required(),
-        DATABASE_DATABASE: Joi.required(),
-        DATABASE_PASSWORD: Joi.required(),
-        DATABASE_AUTO_LOAD_ENTITIES: Joi.number().min(0).max(1),
-        DATABASE_SYNCHRONIZE: Joi.number().min(0).max(1),
-      })
-    }),
+    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      imports: [ConfigModule.forFeature(appConfig)],
+      inject: [appConfig.KEY],
+      useFactory: async (appConfigurations: ConfigType<typeof appConfig>) => {
         return {
-          type: configService.get<'postgres'>('database.type'),
-          host: configService.get<string>('database.host'),
-          port: configService.get<number>('database.port'),
-          username: configService.get<string>('database.username'),
-          password: configService.get<string>('database.password'),
-          autoLoadEntities: configService.get<boolean>('database.autoLoadEntities'),
-          synchronize: configService.get<boolean>('database.synchronize'),
+          type: appConfigurations.database.type,
+          host: appConfigurations.database.host,
+          port: appConfigurations.database.port,
+          username: appConfigurations.database.username,
+          password: appConfigurations.database.password,
+          autoLoadEntities: appConfigurations.database.autoLoadEntities,
+          synchronize: appConfigurations.database.synchronize,
         }
       }
     }),
