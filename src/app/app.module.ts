@@ -9,15 +9,25 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecadosModule } from '../recados/recados.module';
 import { PessoaModule } from '../pessoa/pessoa.module';
-import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from '@hapi/joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
+      validationSchema: Joi.object({
+        DATABASE_TYPE: Joi.required(),
+        DATABASE_HOST: Joi.required(),
+        DATABASE_PORT: Joi.number(),
+        DATABASE_USERNAME: Joi.required(),
+        DATABASE_DATABASE: Joi.required(),
+        DATABASE_PASSWORD: Joi.required(),
+        DATABASE_AUTO_LOAD_ENTITIES: Joi.number().min(0).max(1),
+        DATABASE_SYNCHRONIZE: Joi.number().min(0).max(1),
+      })
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as "postgres",
