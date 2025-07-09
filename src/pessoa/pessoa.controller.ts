@@ -6,11 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { PessoaService } from './pessoa.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
+import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { Request } from 'express';
+import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 
+@UseGuards(AuthTokenGuard)
 @Controller('pessoa')
 export class PessoaController {
   constructor(private readonly pessoaService: PessoaService) {}
@@ -21,7 +27,8 @@ export class PessoaController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Req() req: Request) {
+    console.log(req[REQUEST_TOKEN_PAYLOAD_KEY])
     return this.pessoaService.findAll();
   }
 

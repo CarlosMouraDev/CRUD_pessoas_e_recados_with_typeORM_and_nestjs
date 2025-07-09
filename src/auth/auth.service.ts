@@ -53,6 +53,8 @@ export class AuthService {
       }
     )
 
-    return accessToken
+    return {
+      token: accessToken
+    }
   }
 }
