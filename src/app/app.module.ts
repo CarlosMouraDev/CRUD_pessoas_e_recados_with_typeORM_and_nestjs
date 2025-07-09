@@ -13,7 +13,7 @@ import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import appConfig from './app.config';
-import { AuthModule } from 'src/common/auth/auth.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
