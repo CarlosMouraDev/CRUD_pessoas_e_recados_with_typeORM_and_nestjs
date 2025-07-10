@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -90,6 +91,10 @@ export class PessoaService {
         throw new NotFoundException('Pessoa não encontrada.');
       }
 
+      if (updated.id !== tokenPayload.sub) {
+        throw new ForbiddenException("Você não pode atualizar os dados de outra pessoa.")
+      }
+
       return this.pessoaRepository.save(updated);
     } catch (error) {
       if (error.code === '23505') {
@@ -108,6 +113,10 @@ export class PessoaService {
     if (!person) {
       throw new NotFoundException('Pessoa não encontrada.');
     }
+
+    if (person.id !== tokenPayload.sub) {
+        throw new ForbiddenException("Você não pode remover outra pessoa.")
+      }
 
     await this.pessoaRepository.remove(person);
   }

@@ -15,7 +15,7 @@ import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { Request } from 'express';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
-import { TokenPayloadParam } from 'src/auth/params/toke-payload.param';
+import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Controller('pessoa')

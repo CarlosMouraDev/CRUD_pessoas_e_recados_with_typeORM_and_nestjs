@@ -1,4 +1,4 @@
-import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, Post, UnauthorizedException } from "@nestjs/common";
 import { LoginDto } from "./dto/login.dto";
 import { Repository } from "typeorm";
 import { Pessoa } from "src/pessoa/entities/pessoa.entity";
@@ -18,6 +18,8 @@ export class AuthService {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly jwtService: JwtService
   ) {}
+  
+  @Post()
   async login(loginDto: LoginDto) {
     let passwordIsValid = false
     let throwError = true
