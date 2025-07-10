@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Recado } from './entities/recados.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PessoaService } from 'src/pessoa/pessoa.service';
 import { NotFoundError } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class RecadosService {
@@ -62,10 +63,10 @@ export class RecadosService {
 
     return recados;
   }
-  async create(createRecadoDto: CreateRecadoDto) {
-    const { deId, paraId } = createRecadoDto;
+  async create(createRecadoDto: CreateRecadoDto, tokenPayload: TokenPayloadDto) {
+    const { paraId } = createRecadoDto;
 
-    const de = await this.pessoaService.findOne(deId);
+    const de = await this.pessoaService.findOne(tokenPayload.sub);
 
     const para = await this.pessoaService.findOne(paraId);
 
@@ -92,7 +93,13 @@ export class RecadosService {
     };
   }
 
-  async delete(id: number) {
+  async delete(id: number, tokenPayload: TokenPayloadDto) {
+    const recado = await this.findOne(id);
+
+    if(recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado não é seu.')
+    }
+    
     await this.recadoRepository.delete({
       id: id,
     });
@@ -100,8 +107,12 @@ export class RecadosService {
     return 'sucesso';
   }
 
-  async update(id: number, updateRecadoDto: UpdateRecadoDto) {
+  async update(id: number, updateRecadoDto: UpdateRecadoDto, tokenPayload: TokenPayloadDto) {
     const recado = await this.findOne(id);
+
+    if(recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado não é seu.')
+    }
 
     recado.texto = updateRecadoDto?.texto ?? recado.texto;
     recado.lido = updateRecadoDto?.lido ?? recado.lido;
