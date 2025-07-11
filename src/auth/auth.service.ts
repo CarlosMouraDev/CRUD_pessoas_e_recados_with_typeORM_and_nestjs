@@ -8,7 +8,6 @@ import { JwtService } from "@nestjs/jwt";
 import jwtConfig from "./config/jwt.config";
 import { ConfigType } from "@nestjs/config";
 import { RefreshTokenDto } from "./dto/refresh-token.dto";
-import { error } from "console";
 
 @Injectable()
 export class AuthService {
@@ -26,8 +25,13 @@ export class AuthService {
     let throwError = true
 
     const pessoa = await this.pessoaRepository.findOneBy({
-      email: loginDto.email
+      email: loginDto.email,
+      active: true
     })
+
+    if(!pessoa) {
+      throw new UnauthorizedException('Pessoa não autorizada.')
+    }
 
     if (pessoa) {
       passwordIsValid = await this.hashingService.compare(
@@ -87,11 +91,12 @@ export class AuthService {
       )
 
       const pessoa = await this.pessoaRepository.findOneBy({
-        id: sub
+        id: sub,
+        active: true,
       })
 
       if(!pessoa) {
-        throw new Error('Pessoa não encontrada.')
+        throw new Error('Pessoa não autorizada.')
       }
 
       return this.createTokens(pessoa)
