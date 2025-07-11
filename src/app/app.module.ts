@@ -9,11 +9,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecadosModule } from '../recados/recados.module';
 import { PessoaModule } from '../pessoa/pessoa.module';
-import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import appConfig from './app.config';
 import { AuthModule } from 'src/auth/auth.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from "path"
 
 @Module({
   imports: [
@@ -33,6 +34,10 @@ import { AuthModule } from 'src/auth/auth.module';
         };
       },
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', '..', 'pictures'),
+      serveRoot: '/pictures'
+    }),
     RecadosModule,
     PessoaModule,
     AuthModule,
@@ -40,14 +45,6 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: MyExceptionFilter,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: MyExceptionFilter,
-    },
   ],
 })
 export class AppModule {}
