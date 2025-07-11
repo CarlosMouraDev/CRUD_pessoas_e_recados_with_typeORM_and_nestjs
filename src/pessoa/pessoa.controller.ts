@@ -7,16 +7,18 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PessoaService } from './pessoa.service';
 import { CreatePessoaDto } from './dto/create-pessoa.dto';
 import { UpdatePessoaDto } from './dto/update-pessoa.dto';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
-import { Request } from 'express';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as path from "path"
+import * as fs from "fs/promises"
 
 @Controller('pessoa')
 export class PessoaController {
@@ -56,5 +58,33 @@ export class PessoaController {
     @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
     return this.pessoaService.remove(+id, tokenPayload);
+  }
+
+  @UseGuards(AuthTokenGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload-picture')
+  async uploadPicture(
+    @UploadedFile() file: Express.Multer.File,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+
+    const fileExtension = path
+      .extname(file.originalname)
+      .toLowerCase()
+      .substring(1)
+
+    const fileName = `${tokenPayload.sub}.${fileExtension}`
+
+    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName)
+
+    await fs.writeFile(fileFullPath, file.buffer)
+
+    return {
+      fieldname: file.fieldname,
+      originalName: file.originalname,
+      mimetype: file.mimetype,
+      buffer: {},
+      size: file.size
+    };
   }
 }
