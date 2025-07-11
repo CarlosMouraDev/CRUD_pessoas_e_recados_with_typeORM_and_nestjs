@@ -23,8 +23,8 @@ export class PessoaService {
   async create(createPessoaDto: CreatePessoaDto) {
     try {
       const passwordHash = await this.hashinfService.hash(
-        createPessoaDto.password
-      )
+        createPessoaDto.password,
+      );
 
       const pessoaData = {
         nome: createPessoaDto.nome,
@@ -68,7 +68,11 @@ export class PessoaService {
     }
   }
 
-  async update(id: number, updatePessoaDto: UpdatePessoaDto, tokenPayload: TokenPayloadDto) {
+  async update(
+    id: number,
+    updatePessoaDto: UpdatePessoaDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
     try {
       const pessoaData = {
         nome: updatePessoaDto.nome,
@@ -77,10 +81,10 @@ export class PessoaService {
 
       if (updatePessoaDto?.password) {
         const passwordHash = await this.hashinfService.hash(
-          updatePessoaDto.password
-        )
+          updatePessoaDto.password,
+        );
 
-        pessoaData['passwordHash'] = passwordHash
+        pessoaData['passwordHash'] = passwordHash;
       }
 
       const updated = await this.pessoaRepository.preload({
@@ -92,7 +96,9 @@ export class PessoaService {
       }
 
       if (updated.id !== tokenPayload.sub) {
-        throw new ForbiddenException("Você não pode atualizar os dados de outra pessoa.")
+        throw new ForbiddenException(
+          'Você não pode atualizar os dados de outra pessoa.',
+        );
       }
 
       return this.pessoaRepository.save(updated);
@@ -115,8 +121,8 @@ export class PessoaService {
     }
 
     if (person.id !== tokenPayload.sub) {
-        throw new ForbiddenException("Você não pode remover outra pessoa.")
-      }
+      throw new ForbiddenException('Você não pode remover outra pessoa.');
+    }
 
     await this.pessoaRepository.remove(person);
   }

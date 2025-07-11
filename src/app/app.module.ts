@@ -30,8 +30,8 @@ import { AuthModule } from 'src/auth/auth.module';
           password: appConfigurations.database.password,
           autoLoadEntities: appConfigurations.database.autoLoadEntities,
           synchronize: appConfigurations.database.synchronize,
-        }
-      }
+        };
+      },
     }),
     RecadosModule,
     PessoaModule,

@@ -63,7 +63,10 @@ export class RecadosService {
 
     return recados;
   }
-  async create(createRecadoDto: CreateRecadoDto, tokenPayload: TokenPayloadDto) {
+  async create(
+    createRecadoDto: CreateRecadoDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
     const { paraId } = createRecadoDto;
 
     const de = await this.pessoaService.findOne(tokenPayload.sub);
@@ -96,10 +99,10 @@ export class RecadosService {
   async delete(id: number, tokenPayload: TokenPayloadDto) {
     const recado = await this.findOne(id);
 
-    if(recado.de.id !== tokenPayload.sub) {
-      throw new ForbiddenException('Esse recado não é seu.')
+    if (recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado não é seu.');
     }
-    
+
     await this.recadoRepository.delete({
       id: id,
     });
@@ -107,11 +110,15 @@ export class RecadosService {
     return 'sucesso';
   }
 
-  async update(id: number, updateRecadoDto: UpdateRecadoDto, tokenPayload: TokenPayloadDto) {
+  async update(
+    id: number,
+    updateRecadoDto: UpdateRecadoDto,
+    tokenPayload: TokenPayloadDto,
+  ) {
     const recado = await this.findOne(id);
 
-    if(recado.de.id !== tokenPayload.sub) {
-      throw new ForbiddenException('Esse recado não é seu.')
+    if (recado.de.id !== tokenPayload.sub) {
+      throw new ForbiddenException('Esse recado não é seu.');
     }
 
     recado.texto = updateRecadoDto?.texto ?? recado.texto;

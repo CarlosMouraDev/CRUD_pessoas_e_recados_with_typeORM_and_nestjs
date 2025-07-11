@@ -12,12 +12,10 @@ import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
     forwardRef(() => PessoaModule),
     MyDynamicModule.register({
       apiKey: 'Aq vem a apiKey',
-      apiUrl: 'http://localhost:3000'
-    })
+      apiUrl: 'http://localhost:3000',
+    }),
   ],
   controllers: [RecadosController],
-  providers: [
-    RecadosService
-  ],
+  providers: [RecadosService],
 })
 export class RecadosModule {}
