@@ -50,7 +50,7 @@ export class PessoaService {
   async findAll() {
     return await this.pessoaRepository.find({
       order: {
-        id: 'ASC',
+        id: 'desc',
       },
     });
   }
