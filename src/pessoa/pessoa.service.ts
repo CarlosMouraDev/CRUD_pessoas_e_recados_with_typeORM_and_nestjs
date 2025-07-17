@@ -128,6 +128,8 @@ export class PessoaService {
     }
 
     await this.pessoaRepository.remove(person);
+
+    return person
   }
 
   async uploadPicture(file: Express.Multer.File, tokenPayload: TokenPayloadDto) {
