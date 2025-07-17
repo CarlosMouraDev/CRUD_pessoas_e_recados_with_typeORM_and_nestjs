@@ -24,7 +24,9 @@ import {
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('recados')
 @Controller('recados')
 export class RecadosController {
   constructor(
@@ -36,12 +38,26 @@ export class RecadosController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Obter todos os recados com paginação.'})
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    example: 1,
+    description: "Itens que serão pulados."
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    example: 10,
+    description: 'Limite por página.'
+  })
   @UseInterceptors(TimingConnectionInterceptor)
   async findAll(@Query() paginationDto: PaginationDto) {
     return await this.recadosService.findAll(paginationDto);
   }
 
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   @Delete(':id')
   async delete(
     @Param('id') id: number,
@@ -51,6 +67,7 @@ export class RecadosController {
   }
 
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   @Post()
   async create(
     @Body() novoRecado: CreateRecadoDto,
@@ -60,6 +77,7 @@ export class RecadosController {
   }
 
   @UseGuards(AuthTokenGuard)
+  @ApiBearerAuth()
   @Patch(':id')
   async update(
     @Param('id') id: number,

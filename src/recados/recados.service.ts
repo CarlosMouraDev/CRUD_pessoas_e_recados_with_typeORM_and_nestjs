@@ -9,6 +9,7 @@ import { NotFoundError } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { EmailService } from 'src/email/email.service';
+import { ResponseRecadoDto } from './dto/response-recado.dto';
 
 @Injectable()
 export class RecadosService {
@@ -19,7 +20,7 @@ export class RecadosService {
     private readonly emailService: EmailService
   ) {}
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<ResponseRecadoDto[]> {
     const { limit = 10, offset = 0 } = paginationDto;
 
     const recados = await this.recadoRepository.find({
@@ -43,7 +44,7 @@ export class RecadosService {
     return recados;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<ResponseRecadoDto> {
     const recados = await this.recadoRepository.findOne({
       relations: ['de', 'para'],
       order: {
@@ -68,7 +69,7 @@ export class RecadosService {
   async create(
     createRecadoDto: CreateRecadoDto,
     tokenPayload: TokenPayloadDto,
-  ) {
+  ) : Promise<ResponseRecadoDto> {
     const { paraId } = createRecadoDto;
 
     const de = await this.pessoaService.findOne(tokenPayload.sub);
@@ -85,11 +86,11 @@ export class RecadosService {
     const recado = this.recadoRepository.create(novoRecado);
     await this.recadoRepository.save(recado);
 
-    await this.emailService.sendEmail(
-      para.email,
-      `Você recebeu um recado de: ${de.nome}`,
-      createRecadoDto.texto
-    )
+    // await this.emailService.sendEmail(
+    //   para.email,
+    //   `Você recebeu um recado de: ${de.nome}`,
+    //   createRecadoDto.texto
+    // )
 
     return {
       ...recado,
@@ -104,7 +105,7 @@ export class RecadosService {
     };
   }
 
-  async delete(id: number, tokenPayload: TokenPayloadDto) {
+  async delete(id: number, tokenPayload: TokenPayloadDto): Promise<ResponseRecadoDto> {
     const recado = await this.findOne(id);
 
     if (recado.de.id !== tokenPayload.sub) {
@@ -115,7 +116,7 @@ export class RecadosService {
       id: id,
     });
 
-    return 'sucesso';
+    return recado
   }
 
   async update(
