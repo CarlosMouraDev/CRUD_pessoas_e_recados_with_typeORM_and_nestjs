@@ -5,6 +5,7 @@ import { Recado } from './entities/recados.entity';
 import { RecadosService } from './recados.service';
 import { PessoaModule } from 'src/pessoa/pessoa.module';
 import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
       apiKey: 'Aq vem a apiKey',
       apiUrl: 'http://localhost:3000',
     }),
+    EmailModule
   ],
   controllers: [RecadosController],
   providers: [RecadosService],

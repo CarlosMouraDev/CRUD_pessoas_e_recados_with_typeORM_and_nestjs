@@ -8,6 +8,7 @@ import { PessoaService } from 'src/pessoa/pessoa.service';
 import { NotFoundError } from 'rxjs';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class RecadosService {
@@ -15,6 +16,7 @@ export class RecadosService {
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoaService: PessoaService,
+    private readonly emailService: EmailService
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -82,6 +84,12 @@ export class RecadosService {
     };
     const recado = this.recadoRepository.create(novoRecado);
     await this.recadoRepository.save(recado);
+
+    await this.emailService.sendEmail(
+      para.email,
+      `Você recebeu um recado de: ${de.nome}`,
+      createRecadoDto.texto
+    )
 
     return {
       ...recado,
